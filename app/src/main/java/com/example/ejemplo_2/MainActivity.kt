@@ -1,5 +1,6 @@
 package com.example.ejemplo_2
 
+import com.example.ejemplo_2.componentes.BottomNavigationBar
 import com.example.ejemplo_2.Pantallas.PantallaInventario
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -30,7 +31,7 @@ class MainActivity : ComponentActivity() {
                             PantallaInventario()
                         }
                         composable("historial") {
-                            PantallaHistorial(historial = historialEjemplo())
+                            PantallaHistorial(historial = historialEjemplo()) //Con argumentos
                         }
                         composable("usuario") {
                             PantallaUsuario()

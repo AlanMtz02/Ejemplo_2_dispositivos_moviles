@@ -9,11 +9,13 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.FilterList
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
+import com.example.ejemplo_2.componentes.TarjetaHerramientaInventario
 import com.example.ejemplo_2.modelo.Herramienta
 
 fun herramientasEjemplo(): List<Herramienta> = listOf(
@@ -33,6 +35,8 @@ fun PantallaInventario() {
     var filtroExpandido by remember { mutableStateOf(false) }
     var mostrarDialogo by remember { mutableStateOf(false) }
     var herramientaEditando by remember { mutableStateOf<Herramienta?>(null) }
+    var herramientaPendienteEliminar by remember { mutableStateOf<Herramienta?>(null) }
+
 
     val categorias = listOf("Todas", "Manuales", "Medición", "Eléctricas/Neumáticas", "Elevación y soporte", "Diagnóstico")
 
@@ -43,7 +47,7 @@ fun PantallaInventario() {
     }
 
     Scaffold(
-        containerColor = Color(0xFFFFF5F5),
+        containerColor = Color(0xFFE8F0FE), //Color de fondo
         floatingActionButton = {
             FloatingActionButton(onClick = {
                 herramientaEditando = null
@@ -56,50 +60,54 @@ fun PantallaInventario() {
         Column(
             modifier = Modifier
                 .background(Color(0xFFE8F0FE))
-                .padding(padding)
+                .padding(bottom = padding.calculateBottomPadding())
                 .fillMaxSize()
         ) {
-            OutlinedTextField(
+            OutlinedTextField( //Barra de busqueda
                 value = textoBusqueda,
                 onValueChange = { textoBusqueda = it },
                 placeholder = { Text("Buscar herramienta") },
 
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(16.dp),
+                    .padding(horizontal = 16.dp, vertical = 8.dp),
                 colors = TextFieldDefaults.colors(
-                    focusedContainerColor = Color(0xFFFFF5F5),     // Color cuando está enfocado
-                    unfocusedContainerColor = Color(0xFFFFF5F5),   // Color cuando NO está enfocado
+                    focusedContainerColor = Color(0xFFFFFFFF),     // Color cuando está enfocado
+                    unfocusedContainerColor = Color(0xFFFFFFFF),   // Color cuando NO está enfocado
                     disabledContainerColor = Color.LightGray,      // Por se llegaa a desactivar
                     focusedIndicatorColor = Color(0xFF1E3A5F),     // Línea inferior al enfocar
                     unfocusedIndicatorColor = Color(0xFFBBBBBB)    // Línea inferior sin foco
+                )
 
-            )
             )
 
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
-                horizontalArrangement = Arrangement.SpaceBetween
+                    .padding(horizontal = 16.dp, vertical = 8.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+
             ) {
-                Column(modifier = Modifier.padding(horizontal = 16.dp)) {
+                Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
                     Text(
                         text = "Inventario",
                         style = MaterialTheme.typography.headlineMedium.copy(
                             fontWeight = FontWeight.Bold,
                             color = Color(0xFF1E3A5F)
-                        )
+                        ),
+                        modifier=Modifier.padding(top = 2.dp, bottom = 4.dp)
+
                     )
                     Text(
                         text = "Categoría activa: $categoriaSeleccionada",
                         style = MaterialTheme.typography.bodySmall,
                         color = Color.DarkGray,
-                        modifier = Modifier.padding(top = 8.dp,bottom=8.dp)
+                        modifier = Modifier.padding(top = 4.dp,bottom=4.dp)
                     )
                 }
 
-                Box {
+                Box { //Menu de categorias
                     IconButton(onClick = { filtroExpandido = true }) {
                         Icon(Icons.Default.FilterList, contentDescription = "Filtrar")
                     }
@@ -122,15 +130,18 @@ fun PantallaInventario() {
 
             LazyColumn(modifier = Modifier.fillMaxSize()) {
                 items(herramientasFiltradas, key = { it.id }) { herramienta ->
-                    TarjetaHerramienta(
+
+                    TarjetaHerramientaInventario( //Llama a la funcion para mostrar las cards
                         herramienta = herramienta,
-                        alEditar = {
+
+                        alEditar = {//Al presionar el icono de editar
                             herramientaEditando = it
                             mostrarDialogo = true
                         },
-                        alEliminar = {
-                            herramientas = herramientas.filterNot { h -> h.id == herramienta.id }
+                        alEliminar = { //Al presionar el icono de eliminar
+                            herramientaPendienteEliminar = herramienta
                         }
+
                     )
                 }
             }
@@ -153,6 +164,28 @@ fun PantallaInventario() {
                     }
                 )
             }
+            //Cuadro de dialogo para eliminar herramienta
+            herramientaPendienteEliminar?.let { herramienta ->
+                AlertDialog(
+                    onDismissRequest = { herramientaPendienteEliminar = null },
+                    title = { Text("¿Eliminar herramienta?") },
+                    text = { Text("¿Estás seguro de eliminar la herramienta \"${herramienta.nombre}\"?") },
+                    confirmButton = {
+                        TextButton(onClick = {
+                            herramientas = herramientas.filterNot { it.id == herramienta.id }
+                            herramientaPendienteEliminar = null
+                        }) {
+                            Text("Aceptar")
+                        }
+                    },
+                    dismissButton = {
+                        TextButton(onClick = { herramientaPendienteEliminar = null }) {
+                            Text("Cancelar")
+                        }
+                    }
+                )
+            }
+
         }
     }
 }

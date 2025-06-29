@@ -1,4 +1,4 @@
-package com.example.ejemplo_2.Pantallas
+package com.example.ejemplo_2.componentes
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*

@@ -10,6 +10,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import com.example.ejemplo_2.componentes.TarjetaHistorialEntrada
@@ -36,43 +37,49 @@ fun PantallaHistorial(historial: List<HistorialEntrada>) {
     Scaffold { padding ->
         Column(
             modifier = Modifier
-                .background(Color(0xFFFFF5F5)) //Color de fondo de pantallas
-                .padding(padding)
+                .background(Color(0xFFFFF5F5)) //Color de fondo de pantalla
+                .padding(bottom = padding.calculateBottomPadding())
                 .fillMaxSize()
         ) {
-            OutlinedTextField(
+            OutlinedTextField( //Barra de busqueda
                 value = textoBusqueda,
                 onValueChange = { textoBusqueda = it },
                 placeholder = { Text("Buscar herramienta") },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(16.dp),
+                    .padding(horizontal = 16.dp, vertical = 8.dp),
                 colors = TextFieldDefaults.colors(
-                    focusedContainerColor = Color.White,
-                    unfocusedContainerColor = Color.White,
-                    focusedIndicatorColor = Color(0xFF1E3A5F),
-                    unfocusedIndicatorColor = Color(0xFFBBBBBB)
+                    focusedContainerColor = Color(0xFFFFFFFF),     // Color cuando está enfocado
+                    unfocusedContainerColor = Color(0xFFFFFFFF),   // Color cuando NO está enfocado
+                    disabledContainerColor = Color.LightGray,      // Por se llegaa a desactivar
+                    focusedIndicatorColor = Color(0xFF1E3A5F),     // Línea inferior al enfocar
+                    unfocusedIndicatorColor = Color(0xFFBBBBBB)    // Línea inferior sin foco
                 )
             )
 
-            Row(
+            Row( //Contiene texto inventario, categoria e icono de filtro
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp, vertical = 8.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Column {
+                Column (modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)){
                     Text(
-                        text = "Historial de Herramientas",
-                        style = MaterialTheme.typography.headlineMedium,
-                        color = Color(0xFF1E3A5F)
+                        text = "Historial",
+                        style = MaterialTheme.typography.headlineMedium.copy(
+                            fontWeight = FontWeight.Bold,
+                            color = Color(0xFF1E3A5F)
+                        ),
+                        modifier = Modifier.padding(top = 2.dp,bottom=4.dp)
+
+
                     )
                     Text(
                         text = "Estado: $filtroSeleccionado",
                         style = MaterialTheme.typography.bodySmall,
                         color = Color.DarkGray,
-                        modifier = Modifier.padding(top = 4.dp)
+                        modifier = Modifier.padding(top = 4.dp,bottom=4.dp)
                     )
                 }
 
@@ -108,7 +115,7 @@ fun PantallaHistorial(historial: List<HistorialEntrada>) {
             }
 
             comentarioMostrado?.let {
-                AlertDialog(
+                AlertDialog( //Cuadro de dialogo
                     onDismissRequest = { comentarioMostrado = null },
                     title = { Text("Comentario") },
                     text = { Text(it.ifEmpty { "Sin comentarios registrados." }) },
