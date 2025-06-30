@@ -8,5 +8,5 @@ data class HistorialEntrada(
     val entregado: Boolean,
     val idEmpleado: String,
     val fechaHoraUso: Date,
-    val comentario: String
+    val comentario: String?=null //El comentario es opcional
 )

@@ -1,4 +1,4 @@
-//Sirve para colocar las herramientas
+//Sirve para colocar las herramientas en el menu historial
 
 package com.example.ejemplo_2.modelo
 
@@ -13,7 +13,7 @@ fun historialEjemplo(): List<HistorialEntrada> {
             entregado = false,
             idEmpleado = "",
             fechaHoraUso = ahora,
-            comentario = "En uso para ajustes en mantenimiento eléctrico."
+            //Se omite comentario ya que aun esta en uso
         ),
         HistorialEntrada(
             id = 2,
